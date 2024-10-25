@@ -15,14 +15,14 @@ public class PercolationStats {
         if (n <= 0 || T_Iteration <= 0)
             throw new IllegalArgumentException("Illegal Argument Exception");
         sidelength = n;
-        if (sidelength == 1) {
-            mean = 1;            // 渗透阈值的平均值
-            stddev = Double.NaN;  // 渗透阈值的样本标准差
-            confidenceLo = Double.NaN;  // 95%置信区间下限
-            confidenceHi = Double.NaN;  // 95%置信区间上限
+        if (sidelength == 1) { // 变长仅为一时
+            mean = 1;
+            stddev = Double.NaN;
+            confidenceLo = Double.NaN;
+            confidenceHi = Double.NaN;
         } else {
             experiments = new double[T_Iteration];  // 记录每一次迭代的渗透阈值
-            Random rand = new Random();            // 使用标准库中的随机数生成器
+            Random rand = new Random();
             for (int i = 0; i < T_Iteration; i++) {   // 进行T_Iteration次迭代
                 Percolation percolation = new Percolation(n, choice);
                 double count = 0;
@@ -34,7 +34,7 @@ public class PercolationStats {
                         count++;                    // 记录open节点数量
                     }
                 }
-                experiments[i] = count * 1.0 / (n * n);  // 记录此次迭代空置概率p
+                experiments[i] = count / (n * n);  // 记录此次迭代空置概率p
             }
             mean = Arrays.stream(experiments).average().orElse(Double.NaN);  // 渗透阈值的样本均值
             stddev = calculateStdDev(experiments, mean);  // 渗透阈值的样本标准差
@@ -74,23 +74,26 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
-        long start_time = System.nanoTime();      //记录开始时间
-        int n = 320, T_Iteration = 200;               //n为网格数，T_Iteration为迭代次数
-        int choice = 2;                           //选择quickfind or weighted quickunion
-        System.out.println("--------------------------------------------------------");
-        if (choice == 1) {
-            System.out.println("The algorithm currently used is：Quick_Find");
-        } else if (choice == 2) {
-            System.out.println("The algorithm currently used is：Weighted Quick Union");
+        int n = 100, T_Iteration = 200;               //n为网格数，T_Iteration为迭代次数
+        //选择quickfind or weighted quickunion
+        for (int choice = 1; choice <= 2; choice++) {
+            System.out.println("--------------------------------------------------------");
+            if (choice == 1) {
+                System.out.println("The algorithm currently used is：Quick_Find");
+            } else if (choice == 2) {
+                System.out.println("The algorithm currently used is：Weighted Quick Union");
+            }
+            long start_time = System.nanoTime();      //记录开始时间
+            PercolationStats percolationStats = new PercolationStats(n, T_Iteration, choice);
+            long consumingtime = System.nanoTime() - start_time;  //计算总耗费时间
+            System.out.println("Creating PercolationStats( " + n + " , " + T_Iteration + " )");
+            System.out.println("mean:\t\t\t\t= " + percolationStats.mean());
+            System.out.println("stddev:\t\t\t\t= " + percolationStats.stddev());
+            System.out.println("confidence_Low:\t\t= " + percolationStats.confidenceLo());
+            System.out.println("confidence_High:\t= " + percolationStats.confidenceHi());
+            System.out.println("The cost of the time is " + consumingtime * 1.0 / 1000000 + "ms");
         }
-        PercolationStats percolationStats = new PercolationStats(n, T_Iteration, choice);
-        long consumingtime = System.nanoTime() - start_time;  //计算总耗费时间
-        System.out.println("Creating PercolationStats( " + n + " , " + T_Iteration + " )");
-        System.out.println("mean:\t\t\t\t= " + percolationStats.mean());
-        System.out.println("stddev:\t\t\t\t= " + percolationStats.stddev());
-        System.out.println("confidence_Low:\t\t= " + percolationStats.confidenceLo());
-        System.out.println("confidence_High:\t= " + percolationStats.confidenceHi());
-        System.out.println("The cost of the time is " + consumingtime * 1.0 / 1000000 + "ms");
+
     }
 }
 

@@ -2,12 +2,11 @@ package percolation;
 
 public class Percolation {
     private boolean[] grid;
-    private int N, count, lastIndex;
+    private int N, lastIndex;
     private UnionFind unionFind;
 
     public Percolation(int N, int choice) { // create N-by-N grid, with all sites blocked
         this.N = N;
-        count = 0;
         lastIndex = N*N+1;
         if (choice == 1) unionFind = new QuickFind(N*N+2);
         else unionFind = new WeightedQuickUnion(N*N+2);
@@ -26,7 +25,6 @@ public class Percolation {
         int target = getIndex(i, j);
         if (grid[target]) return;  // 如果该位置已经是开放的，直接返回
         grid[target] = true;       // 将该位置标记为开放
-        count++;                   // 更新开放的数量
 
         if (i == 1) unionFind.union(0, target); // 如果是第一行，则与虚拟顶部连接
         if (i == N) unionFind.union(target, lastIndex); // 如果是最后一行，则与虚拟底部连接
@@ -67,8 +65,5 @@ public class Percolation {
         return unionFind.connected(0, lastIndex);
     }
 
-//    public static void main(String[] args) {
-//
-//    } // test client, optional
 }
 
