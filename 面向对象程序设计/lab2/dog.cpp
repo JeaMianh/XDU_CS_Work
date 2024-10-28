@@ -1,3 +1,7 @@
+/*
+定义一个 Dog，包含 name、age、sex 和 weight 等属性以及对这些属性操作的方法。要求用字符指针描述 name，并且用对象指针来测试这个类。
+*/
+
 #include <iostream>
 #include <cstring>
 using namespace std;
