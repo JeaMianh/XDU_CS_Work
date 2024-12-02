@@ -1,0 +1,12 @@
+# Kernel module build artifacts
+*.ko
+*.o
+*.symvers
+*.cmd
+.*.cmd
+*.mod
+*.mod.c
+*.order
+
+# User space application build artifacts
+user_space
